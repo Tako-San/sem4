@@ -21,6 +21,8 @@ namespace my_math
 
     ~Frac ( ) = default;
 
+    double decimal ( ) const;
+
     long numerator ( ) const;
     uint denomerator ( ) const;
 
@@ -66,6 +68,13 @@ namespace my_math
     ntor_ = sign * ntor / gcd;
     dtor_ = sign * dtor / gcd;
   }
+
+  /**
+   * @brief 
+   * @return decimal number
+   */
+  double Frac::decimal ( ) const
+  { return ntor_ / dtor_; }
 
   /**
    * @brief Numerator getter
