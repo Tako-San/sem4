@@ -1,8 +1,9 @@
 #include <iostream>
+#include <numeric>
 
 namespace my_math
 {
-  class Frac
+  class Frac final
   {
   private:
 
@@ -56,12 +57,14 @@ namespace my_math
     int sign = 1;
 
     if (dtor == 0)
-      throw std::runtime_error("Denumerator = 0");
+      throw std::runtime_error("Denomerator = 0");
     else if (dtor < 0)
       sign = -1;
 
-    ntor_ = sign * ntor;
-    dtor_ = sign * dtor;
+    auto gcd = std::gcd(ntor, dtor);
+
+    ntor_ = sign * ntor / gcd;
+    dtor_ = sign * dtor / gcd;
   }
 
   /**
@@ -91,10 +94,7 @@ namespace my_math
    * @return true or false
    */
   bool Frac::is_eq ( const Frac & f ) const
-  {
-    // TODO: temporary solution
-    return ntor_ == f.ntor_ && dtor_ == f.dtor_;
-  }
+  { return ntor_ == f.ntor_ && dtor_ == f.dtor_; }
 
   /**
    * @brief add f to current fraction
@@ -103,9 +103,14 @@ namespace my_math
    */
   Frac & Frac::operator+= ( const Frac & f )
   {
-    // TODO: temporary solution
     ntor_ = ntor_ * f.dtor_ + f.ntor_ * dtor_;
     dtor_ *= f.dtor_;
+    
+    auto gcd = std::gcd(ntor_, dtor_);
+
+    ntor_ /= gcd;
+    dtor_ /= gcd;
+
     return *this;
   }
 
@@ -129,6 +134,12 @@ namespace my_math
   {
     ntor_ *= f.ntor_;
     dtor_ *= f.dtor_;
+
+    auto gcd = std::gcd(ntor_, dtor_);
+
+    ntor_ /= gcd;
+    dtor_ /= gcd; 
+
     return *this;
   }
 
@@ -145,6 +156,11 @@ namespace my_math
     int sign = (f.ntor_ < 0) ? -1 : 1;
     ntor_ *= sign * f.dtor_;
     dtor_ *= sign * f.ntor_;
+
+    auto gcd = std::gcd(ntor_, dtor_);
+
+    ntor_ /= gcd;
+    dtor_ /= gcd; 
 
     return *this;
   }
