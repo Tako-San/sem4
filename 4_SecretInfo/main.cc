@@ -20,20 +20,20 @@ int main(int argc, char **argv)
 
   AC::Automaton ac;
 
-  ac.add_from_file("test/vault");
+  ac.add_from_file("test/vault")
+
+#ifdef TEST
+  ac.add_str("test");
+  ac.add_str("rok");
+  ac.add_str("roka");
+  ac.add_str("strok");
+  ac.add_str("t");
+#endif
 
   fs::path pth{argv[1]};
-  std::fstream fst{pth};
+  std::ifstream fst{pth, std::ios::in};
 
-  std::string str;
-  while (fst)
-  {
-    std::string tmp;
-    fst >> tmp;
-    str.append(tmp);
-  }
-
-  ac.search(str);
+  ac.search(std::istreambuf_iterator<char>(fst), std::istreambuf_iterator<char>());
 
   return 0;
 }
