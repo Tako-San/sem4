@@ -37,7 +37,8 @@ private:
   TrieNode *cur_state_;
   std::vector<std::string> words_;
 
-  void add_str_noinit(const std::string &str);
+  template <typename It>
+  void add_str_noinit(It beg, It end);
   void init();
 
 public:

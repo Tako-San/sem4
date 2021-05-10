@@ -28,27 +28,28 @@ bool Automaton::TrieNode::is_term() const
   return (out >= 0);
 }
 
-void Automaton::add_str_noinit(const std::string &str)
+template <typename It>
+void Automaton::add_str_noinit(It beg, It end)
 {
   auto cur_node = &root_;
-  for (auto c : str)
+
+  for (; beg != end; ++beg)
   {
-    auto child_node = cur_node->get_link(c);
+    auto child_node = cur_node->get_link(*beg);
     if (!child_node)
     {
       child_node = new TrieNode(&root_);
-      cur_node->links_[c] = child_node;
+      cur_node->links_[*beg] = child_node;
     }
     cur_node = child_node;
   }
   cur_node->out = words_.size();
-  words_.push_back(str);
 }
 
 void Automaton::add_str(const std::string &str)
 {
-  add_str_noinit(str);
-
+  add_str_noinit(str.begin(), str.end());
+  words_.push_back(str);
   init();
 }
 
@@ -66,18 +67,13 @@ void Automaton::add_from_file(const fs::path &p)
       continue;
 #endif
 
+    auto end = std::istreambuf_iterator<char>();
+
     std::ifstream fst{file.path(), std::ios::in};
-    std::string str;
+    add_str_noinit(std::istreambuf_iterator<char>(fst), end);
 
-    while (fst)
-    {
-      std::string tmp;
-      fst >> tmp;
-      str.append(tmp);
-    }
-
-    fst.close();
-    add_str_noinit(str);
+    fst = std::ifstream {file.path(), std::ios::in};
+    words_.emplace_back(std::istreambuf_iterator<char>(fst), end);
   }
   init();
 }
