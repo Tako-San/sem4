@@ -33,7 +33,6 @@ class Automaton
   };
 
 private:
-  typedef void (*Callback)(const char *substr);
   TrieNode root_;
   TrieNode *cur_state_;
   std::vector<std::string> words_;

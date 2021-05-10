@@ -66,7 +66,6 @@ void Automaton::add_from_file(const fs::path &p)
       continue;
 #endif
 
-
     std::ifstream fst{file.path(), std::ios::in};
     std::string str;
 
