@@ -28,7 +28,7 @@ bool Automaton::TrieNode::is_term() const
   return (out >= 0);
 }
 
-void Automaton::add_str(const std::string &str)
+void Automaton::add_str_noinit(const std::string &str)
 {
   auto cur_node = &root_;
   for (auto c : str)
@@ -43,7 +43,43 @@ void Automaton::add_str(const std::string &str)
   }
   cur_node->out = words_.size();
   words_.push_back(str);
+}
 
+void Automaton::add_str(const std::string &str)
+{
+  add_str_noinit(str);
+
+  init();
+}
+
+void Automaton::add_from_file(const fs::path &p)
+{
+  for (auto &file : fs::directory_iterator(p))
+  {
+    if (fs::status(file).type() == fs::file_type::directory || fs::file_size(file) < MIN_FILE_LEN)
+      continue;
+
+#if 0
+    auto f_sz = fs::file_size(file);
+
+    if (f_sz < MIN_FILE_LEN)
+      continue;
+#endif
+
+
+    std::ifstream fst{file.path(), std::ios::in};
+    std::string str;
+
+    while (fst)
+    {
+      std::string tmp;
+      fst >> tmp;
+      str.append(tmp);
+    }
+
+    fst.close();
+    add_str_noinit(str);
+  }
   init();
 }
 

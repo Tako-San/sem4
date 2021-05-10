@@ -20,21 +20,7 @@ int main(int argc, char **argv)
 
   AC::Automaton ac;
 
-  for (auto &file : fs::directory_iterator("test/vault"))
-  {
-    std::ifstream fst{file.path()};
-    std::string str;
-
-    while (fst)
-    {
-      std::string tmp;
-      fst >> tmp;
-      str.append(tmp);
-    }
-
-    fst.close();
-    ac.add_str(str);
-  }
+  ac.add_from_file("test/vault");
 
   fs::path pth{argv[1]};
   std::fstream fst{pth};
