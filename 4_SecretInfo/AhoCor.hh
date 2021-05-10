@@ -5,9 +5,8 @@
 
 #include <iostream>
 
-using std::cin;
-using std::cout;
-using std::endl;
+namespace AC // Aho-Corasick
+{
 
 class Automaton
 {
@@ -42,3 +41,4 @@ public:
   void search(const std::string &str);
   static void print_msg(const std::string &str);
 };
+} // namespace AC

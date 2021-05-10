@@ -1,5 +1,8 @@
 #include "AhoCor.hh"
 
+namespace AC
+{
+
 Automaton::TrieNode::TrieNode(TrieNode *fail /*= nullptr*/) : fail_(fail), term_(nullptr), out(-1)
 {
 }
@@ -124,5 +127,7 @@ void Automaton::search(const std::string &str)
 
 void Automaton::print_msg(const std::string &str)
 {
-  cout << "found substring " << str << "\n";
+  std::cout << "found substring " << str << "\n";
 }
+
+} // namespace AC

@@ -4,9 +4,13 @@
 
 #include "AhoCor.hh"
 
+using std::cin;
+using std::cout;
+using std::endl;
+
 namespace fs = std::filesystem;
 
-int main(int argc, char ** argv)
+int main(int argc, char **argv)
 {
   if (argc < 2)
   {
@@ -14,14 +18,14 @@ int main(int argc, char ** argv)
     return 1;
   }
 
-  Automaton ac;
+  AC::Automaton ac;
 
-  for (auto & file : fs::directory_iterator("test/vault"))
+  for (auto &file : fs::directory_iterator("test/vault"))
   {
     std::ifstream fst{file.path()};
     std::string str;
 
-    while(fst)
+    while (fst)
     {
       std::string tmp;
       fst >> tmp;
@@ -36,7 +40,7 @@ int main(int argc, char ** argv)
   std::fstream fst{pth};
 
   std::string str;
-  while(fst)
+  while (fst)
   {
     std::string tmp;
     fst >> tmp;
