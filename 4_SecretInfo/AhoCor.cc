@@ -39,7 +39,11 @@ void Automaton::add_from_file(const fs::path &p)
 {
   for (auto &file : fs::directory_iterator(p))
   {
-    if (fs::status(file).type() == fs::file_type::directory || fs::file_size(file) < MIN_FILE_LEN)
+    auto f_sz = fs::file_size(file);
+#ifdef MULTI
+    std::cout << "===" << f_sz << "===" << std::endl;
+#endif
+    if (fs::status(file).type() == fs::file_type::directory || f_sz < MIN_FILE_LEN)
       continue;
 
 #if 0
@@ -52,10 +56,10 @@ void Automaton::add_from_file(const fs::path &p)
     auto end = std::istreambuf_iterator<char>();
 
     std::ifstream fst{file.path(), std::ios::in};
-    add_str_noinit(std::istreambuf_iterator<char>(fst), end);
+    add_str_noinit(std::istreambuf_iterator<char>(fst), end, f_sz);
 
     fst = std::ifstream{file.path(), std::ios::in};
-    words_.emplace_back(std::istreambuf_iterator<char>(fst), end);
+    words_.emplace_back(file.path().filename());
   }
   init();
 }
@@ -128,7 +132,7 @@ void Automaton::print_if_term() const
 
 void Automaton::print_msg(const std::string &str)
 {
-  std::cout << "found substring " << str << "\n";
+  std::cout << "found substring from " << str << std::endl;
 }
 
 } // namespace AC
