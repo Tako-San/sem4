@@ -42,9 +42,6 @@ private:
 public:
   void add_str(const std::string &str);
   void add_from_file(const fs::path &p);
-  void step(char c);
-  void print_if_term() const;
-  static void print_msg(const std::string &str);
 
   template <typename It> void search(It beg, It end)
   {
@@ -52,13 +49,17 @@ public:
 
     for (; beg != end; ++beg)
     {
-      // cout << c << ':' << endl;
+      std::cout << *beg << ':' << std::endl;
       step(*beg);
       print_if_term();
     }
   }
 
 private:
+  void step(char c);
+  void print_if_term() const;
+  static void print_msg(const std::string &str);
+
   template <typename It> void add_str_noinit(It beg, It end)
   {
     auto cur_node = &root_;
@@ -76,4 +77,4 @@ private:
     cur_node->out = words_.size();
   }
 };
-} // namespace AC
+} // namespace AhoCorasick
