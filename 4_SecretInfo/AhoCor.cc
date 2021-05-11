@@ -1,6 +1,6 @@
 #include "AhoCor.hh"
 
-namespace AC
+namespace AhoCorasick
 {
 
 Automaton::TrieNode::TrieNode(TrieNode *fail /*= nullptr*/) : fail_(fail), term_(nullptr), out(-1)

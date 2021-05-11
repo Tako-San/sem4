@@ -7,7 +7,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace AC // Aho-Corasick
+namespace AhoCorasick
 {
 
 namespace fs = std::filesystem;
