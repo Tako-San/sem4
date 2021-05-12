@@ -26,6 +26,7 @@ int main(int argc, char **argv)
       return print_msg(argv[i]);
 
   AC::Automaton ac;
+  ac.set_flen(3);
   ac.add_from_file(argv[1]);
 
   std::ifstream fst{argv[2], std::ios::in};

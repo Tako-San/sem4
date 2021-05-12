@@ -11,7 +11,6 @@ namespace AhoCorasick
 {
 
 namespace fs = std::filesystem;
-constexpr size_t MIN_FILE_LEN = 1 /*4*1024*/;
 
 class Automaton
 {
@@ -37,9 +36,12 @@ private:
   TrieNode *cur_state_;
   std::vector<std::string> words_;
 
+  size_t MIN_FILE_LEN{1};
+
   void init();
 
 public:
+  void set_flen(size_t flen);
   void add_str(const std::string &str);
   void add_from_file(const fs::path &p);
 
@@ -60,52 +62,36 @@ private:
   void print_if_term() const;
   static void print_msg(const std::string &str);
 
-  template <typename It> void add_str_noinit(It beg, It end, typename std::iterator_traits<It>::difference_type diff = 0)
+  template <typename It> void add_str_noinit(It beg, It end, typename std::iterator_traits<It>::difference_type diff)
   {
-#ifdef MULTI
     std::vector<TrieNode *> cur_nodes;
 
     size_t wnum = diff - MIN_FILE_LEN + 1;
-    size_t cter = 0; //counter
-#else
-    auto cur_node = &root_;
-#endif
-    for (; beg != end; ++beg)
+    size_t cter = 0; // counter
+
+    size_t counter = 0;
+    for (; beg != end; ++beg, ++counter)
     {
-#ifdef MULTI
       if (cter < wnum)
       {
         cur_nodes.push_back(&root_);
         cter++;
       }
 
-      for (auto cur_node : cur_nodes)
+      for (size_t i = 0, end = cur_nodes.size(); i < end; ++i)
       {
-        auto child_node = cur_node->get_link(*beg);
+        auto child_node = cur_nodes[i]->get_link(*beg);
         if (!child_node)
         {
           child_node = new TrieNode(&root_);
-          cur_node->links_[*beg] = child_node;
+          cur_nodes[i]->links_[*beg] = child_node;
         }
-        cur_node = child_node;
-      }
-#else
-      auto child_node = cur_node->get_link(*beg);
-      if (!child_node)
-      {
-        child_node = new TrieNode(&root_);
-        cur_node->links_[*beg] = child_node;
-      }
-      cur_node = child_node;
-#endif
-    }
+        cur_nodes[i] = child_node;
 
-#ifdef MULTI
-    for (auto cur_node : cur_nodes)
-      cur_node->out = words_.size();
-#else
-    cur_node->out = words_.size();
-#endif
+        if (counter - i + 1 >= MIN_FILE_LEN)
+          cur_nodes[i]->out = words_.size();
+      }
+    }
   }
 };
 } // namespace AhoCorasick

@@ -2,7 +2,6 @@
 
 namespace AhoCorasick
 {
-
 Automaton::TrieNode::TrieNode(TrieNode *fail /*= nullptr*/) : fail_(fail), term_(nullptr), out(-1)
 {
 }
@@ -28,9 +27,14 @@ bool Automaton::TrieNode::is_term() const
   return (out >= 0);
 }
 
+void Automaton::set_flen(size_t flen)
+{
+  MIN_FILE_LEN = flen;
+}
+
 void Automaton::add_str(const std::string &str)
 {
-  add_str_noinit(str.begin(), str.end());
+  add_str_noinit(str.begin(), str.end(), str.length());
   words_.push_back(str);
   init();
 }
@@ -40,18 +44,9 @@ void Automaton::add_from_file(const fs::path &p)
   for (auto &file : fs::directory_iterator(p))
   {
     auto f_sz = fs::file_size(file);
-#ifdef MULTI
-    std::cout << "===" << f_sz << "===" << std::endl;
-#endif
+
     if (fs::status(file).type() == fs::file_type::directory || f_sz < MIN_FILE_LEN)
       continue;
-
-#if 0
-    auto f_sz = fs::file_size(file);
-
-    if (f_sz < MIN_FILE_LEN)
-      continue;
-#endif
 
     auto end = std::istreambuf_iterator<char>();
 
@@ -135,4 +130,4 @@ void Automaton::print_msg(const std::string &str)
   std::cout << "found substring from " << str << std::endl;
 }
 
-} // namespace AC
+} // namespace AhoCorasick
