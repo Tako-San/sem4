@@ -1,0 +1,5 @@
+*.img
+stats-dump
+stats-restore
+restore.log
+dump.log
