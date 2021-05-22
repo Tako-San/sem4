@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 {
   if (argc < 3)
   {
-    std::cout << "USAGE: " << argv[0] << " VAUILT_DIR FILENAME" << std::endl;
+    std::cout << "USAGE: " << argv[0] << " VAULT_DIR FILENAME" << std::endl;
     return 1;
   }
 
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 
   AC::Automaton ac;
   ac.set_flen(3);
-  ac.add_from_file(argv[1]);
+  ac.add_from_dir(argv[1]);
 
   std::ifstream fst{argv[2], std::ios::in};
   ac.search(std::istreambuf_iterator<char>(fst), std::istreambuf_iterator<char>());

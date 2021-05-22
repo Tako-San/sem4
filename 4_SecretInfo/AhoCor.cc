@@ -29,7 +29,7 @@ bool Automaton::TrieNode::is_term() const
 
 void Automaton::set_flen(size_t flen)
 {
-  MIN_FILE_LEN = flen;
+  min_flen_ = flen;
 }
 
 void Automaton::add_str(const std::string &str)
@@ -39,13 +39,13 @@ void Automaton::add_str(const std::string &str)
   init();
 }
 
-void Automaton::add_from_file(const fs::path &p)
+void Automaton::add_from_dir(const fs::path &p)
 {
   for (auto &file : fs::directory_iterator(p))
   {
     auto f_sz = fs::file_size(file);
 
-    if (fs::status(file).type() == fs::file_type::directory || f_sz < MIN_FILE_LEN)
+    if (fs::status(file).type() == fs::file_type::directory || f_sz < min_flen_)
       continue;
 
     auto end = std::istreambuf_iterator<char>();

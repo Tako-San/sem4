@@ -22,7 +22,7 @@ class Automaton
     LinksMap links_;
     TrieNode *fail_;
     TrieNode *term_;
-    int out;
+    int out; // -1 if term, idx in words_
 
     TrieNode(TrieNode *fail = nullptr);
     ~TrieNode();
@@ -36,14 +36,14 @@ private:
   TrieNode *cur_state_;
   std::vector<std::string> words_;
 
-  size_t MIN_FILE_LEN{1};
+  size_t min_flen_{1};
 
   void init();
 
 public:
   void set_flen(size_t flen);
   void add_str(const std::string &str);
-  void add_from_file(const fs::path &p);
+  void add_from_dir(const fs::path &p);
 
   template <typename It> void search(It beg, It end);
 
@@ -57,9 +57,7 @@ private:
 
 template <typename It> void Automaton::search(It beg, It end)
 {
-  cur_state_ = &root_;
-
-  for (; beg != end; ++beg)
+  for (cur_state_ = &root_; beg != end; ++beg)
   {
     std::cout << *beg << ':' << std::endl;
     step(*beg);
@@ -72,7 +70,7 @@ void Automaton::add_str_noinit(It beg, It end, typename std::iterator_traits<It>
 {
   std::vector<TrieNode *> cur_nodes;
 
-  size_t wnum = diff - MIN_FILE_LEN + 1;
+  size_t wnum = diff - min_flen_ + 1;
   size_t cter = 0; // counter
 
   size_t counter = 1;
@@ -86,7 +84,7 @@ void Automaton::add_str_noinit(It beg, It end, typename std::iterator_traits<It>
 
     for (size_t i = 0, end = cur_nodes.size(); i < end; ++i)
     {
-      auto child_node = cur_nodes[i]->get_link(*beg);
+      auto * child_node = cur_nodes[i]->get_link(*beg);
       if (!child_node)
       {
         child_node = new TrieNode(&root_);
@@ -94,7 +92,7 @@ void Automaton::add_str_noinit(It beg, It end, typename std::iterator_traits<It>
       }
       cur_nodes[i] = child_node;
 
-      if (counter - i >= MIN_FILE_LEN)
+      if (counter - i >= min_flen_)
         cur_nodes[i]->out = words_.size();
     }
   }
